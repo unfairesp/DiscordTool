@@ -1,5 +1,7 @@
 # Advanced Discord Management Tool
 
+https://youtu.be/9kTnpdeMAc0
+
 A powerful, all-in-one suite for managing multiple Discord accounts, securing tokens, and optimizing account performance.
 
 ## Key Features
