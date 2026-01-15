@@ -1,0 +1,391 @@
+<Window x:Class="DiscordManagementTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiscordManagementTool"
+        mc:Ignorable="d"
+        Title="Discord Management Tool" Height="600" Width="900"
+        Background="#2C2F33" Foreground="White">
+    <Window.Resources>
+        <Style x:Key="PlaceholderTextBox" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                            </Border>
+                            <TextBlock IsHitTestVisible="False" Text="{TemplateBinding Tag}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="#555" FontSize="{TemplateBinding FontSize}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="#7289DA"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="#7289DA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#23272A" Padding="10">
+            <StackPanel>
+                <TextBlock Text="MANAGEMENT TOOL" FontSize="18" FontWeight="Bold" Margin="0,0,0,20" Foreground="#7289DA" HorizontalAlignment="Center"/>
+                
+                <Button Content="Tokens" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="TokensTab"/>
+                <Button Content="Token Info" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="TokenInfoTab"/>
+                <Button Content="Profile" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="ProfileTab"/>
+                <Button Content="Joiner" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="JoinerTab"/>
+                <Button Content="Cleaner" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="CleanerTab"/>
+                <Button Content="Mass DM" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="MassDMTab"/>
+                <Button Content="Webhooks" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="WebhooksTab"/>
+                <Button Content="Advanced Tools" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="AdvancedTab"/>
+                <Button Content="Proxies" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="ProxiesTab"/>
+                <Button Content="Bypass &amp; Rates" Height="40" Margin="0,5" Background="#2C2F33" Foreground="White" BorderThickness="0" Click="Tab_Click" Tag="BypassTab"/>
+                
+                <Separator Margin="0,20" Background="#444"/>
+                
+                <TextBlock x:Name="TokenCountText" Text="Tokens: 0" HorizontalAlignment="Center" Margin="0,10"/>
+                <TextBlock x:Name="ProxyCountText" Text="Proxies: 0" HorizontalAlignment="Center" Margin="0,5" Foreground="#43B581" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="150"/>
+            </Grid.RowDefinitions>
+
+            <!-- Tabs Content -->
+            <Grid Grid.Row="0">
+                <!-- Tokens Tab -->
+                <Grid x:Name="TokensTab" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="Token Management" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBox x:Name="TokenInput" Grid.Row="1" AcceptsReturn="True" Background="#23272A" Foreground="White" BorderBrush="#444" Padding="5" VerticalScrollBarVisibility="Auto" Margin="0,0,0,10" Tag="Paste tokens here (one per line)..." Style="{StaticResource PlaceholderTextBox}"/>
+                    
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Clear All" Width="100" Height="30" Margin="5,0" Background="#F04747" Foreground="White" BorderThickness="0" Click="ClearTokens_Click"/>
+                        <Button Content="Import &amp; Validate" Width="150" Height="30" Background="#43B581" Foreground="White" BorderThickness="0" Click="ValidateTokens_Click"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Joiner Tab -->
+                <Grid x:Name="JoinerTab" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Server Joiner" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Invite Code:" Margin="0,0,0,5"/>
+                        <TextBox x:Name="InviteInput" Height="30" Background="#23272A" Foreground="White" BorderBrush="#444" VerticalContentAlignment="Center" Padding="5" Tag="https://discord.gg/invitecode" Style="{StaticResource PlaceholderTextBox}"/>
+                        <Button Content="Start Joining" Height="40" Margin="0,20" Background="#7289DA" Foreground="White" BorderThickness="0" Click="StartJoining_Click"/>
+                        <ProgressBar x:Name="JoinProgress" Height="20" Margin="0,10" Background="#23272A" Foreground="#7289DA" BorderThickness="0"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Cleaner Tab -->
+                <Grid x:Name="CleanerTab" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Account Cleaner" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <CheckBox x:Name="LeaveGuildsCheck" Content="Leave all Servers" Foreground="White" Margin="0,10"/>
+                        <CheckBox x:Name="DeleteOwnedGuildsCheck" Content="Delete Owned Servers" Foreground="White" Margin="0,10"/>
+                        <CheckBox x:Name="RemoveFriendsCheck" Content="Remove all Friends" Foreground="White" Margin="0,10"/>
+                        <Button Content="Start Cleaning" Height="40" Margin="0,20" Background="#F04747" Foreground="White" BorderThickness="0" Click="StartCleaning_Click"/>
+                        <ProgressBar x:Name="CleanProgress" Height="20" Margin="0,10" Background="#23272A" Foreground="#F04747" BorderThickness="0"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Mass DM Tab -->
+                <Grid x:Name="MassDMTab" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Mass Direct Message" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Message Content:" Margin="0,0,0,5"/>
+                        <TextBox x:Name="MassDMInput" Height="100" AcceptsReturn="True" Background="#23272A" Foreground="White" BorderBrush="#444" Padding="5" VerticalScrollBarVisibility="Auto" Tag="Enter message content here..." Style="{StaticResource PlaceholderTextBox}"/>
+                        
+                        <TextBlock Text="Target:" Margin="0,15,0,5"/>
+                        <RadioButton x:Name="DMTagsFriends" Content="All Friends" Foreground="White" IsChecked="True" Margin="0,5"/>
+                        
+                        <Button Content="Start Mass DM" Height="40" Margin="0,20" Background="#7289DA" Foreground="White" BorderThickness="0" Click="StartMassDM_Click"/>
+                        <ProgressBar x:Name="MassDMProgress" Height="20" Margin="0,10" Background="#23272A" Foreground="#7289DA" BorderThickness="0"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Token Info Tab -->
+                <Grid x:Name="TokenInfoTab" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Select Account: " VerticalAlignment="Center" Foreground="White"/>
+                        <ComboBox x:Name="TokenInfoSelector" Width="250" Margin="10,0" Background="White" Foreground="Black">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FullName}" Foreground="Black"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Content="Fetch Detailed Info" Click="FetchTokenInfo_Click" Width="150" Background="#7289DA" Foreground="White" BorderThickness="0" Margin="0,0,10,0"/>
+                        <Button Content="Export Full Data (JSON)" Click="ExportFullData_Click" Width="150" Background="#43B581" Foreground="White" BorderThickness="0"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,10,0">
+                            <StackPanel x:Name="TokenDetailsPanel"/>
+                        </ScrollViewer>
+
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Guilds &amp; Permissions" FontSize="18" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
+                            <ListBox x:Name="GuildsInfoList" Grid.Row="1" Background="#2F3136" BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#444" BorderThickness="0,0,0,1" Padding="5">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White"/>
+                                                    <TextBlock Text="{Binding PermissionsText}" FontSize="10" Foreground="Gray"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" Text="{Binding Role}" Foreground="#7289DA" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- Profile Tab -->
+                <Grid x:Name="ProfileTab" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Profile Updater" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Status Message:" Margin="0,0,0,5"/>
+                        <TextBox x:Name="StatusInput" Background="#23272A" Foreground="White" BorderBrush="#444" Padding="5" Margin="0,0,0,10" Tag="What's on your mind?" Style="{StaticResource PlaceholderTextBox}"/>
+                        
+                        <TextBlock Text="Display Name:" Margin="0,0,0,5"/>
+                        <TextBox x:Name="DisplayNameInput" Background="#23272A" Foreground="White" BorderBrush="#444" Padding="5" Margin="0,0,0,10" Tag="New Display Name" Style="{StaticResource PlaceholderTextBox}"/>
+
+                        <TextBlock Text="Pronouns:" Margin="0,0,0,5"/>
+                        <TextBox x:Name="PronounsInput" Background="#23272A" Foreground="White" BorderBrush="#444" Padding="5" Margin="0,0,0,10" Tag="they/them" Style="{StaticResource PlaceholderTextBox}"/>
+
+                        <TextBlock Text="Profile Color (Hex):" Margin="0,0,0,5"/>
+                        <TextBox x:Name="ProfileColorInput" Background="#23272A" Foreground="White" BorderBrush="#444" Padding="5" Margin="0,0,0,10" Tag="#7289DA" Style="{StaticResource PlaceholderTextBox}"/>
+
+                        <TextBlock Text="HypeSquad:" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="HypeSquadCombo" Background="White" Foreground="Black" Margin="0,0,0,15">
+                            <ComboBoxItem Content="None" Tag="0" IsSelected="True" Foreground="Black"/>
+                            <ComboBoxItem Content="Bravery" Tag="1" Foreground="Black"/>
+                            <ComboBoxItem Content="Brilliance" Tag="2" Foreground="Black"/>
+                            <ComboBoxItem Content="Balance" Tag="3" Foreground="Black"/>
+                        </ComboBox>
+
+                        <Button Content="Update Profiles" Height="40" Background="#7289DA" Foreground="White" BorderThickness="0" Click="UpdateProfiles_Click"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Advanced Tools Tab -->
+                <Grid x:Name="AdvancedTab" Visibility="Collapsed">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Account Management" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <WrapPanel Margin="0,0,0,20">
+                                <Button Content="Mass Leave Servers" Click="MassLeave_Click" Width="180" Height="35" Margin="5" Background="#F04747" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Mass Delete Friends" Click="MassUnfriend_Click" Width="180" Height="35" Margin="5" Background="#F04747" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Mass Block Friends" Click="MassBlock_Click" Width="180" Height="35" Margin="5" Background="#F04747" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Mass Unblock All" Click="MassUnblock_Click" Width="180" Height="35" Margin="5" Background="#43B581" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Accept All Requests" Click="AcceptAllRequests_Click" Width="180" Height="35" Margin="5" Background="#43B581" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Reject All Requests" Click="RejectAllRequests_Click" Width="180" Height="35" Margin="5" Background="#F04747" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Close All DMs" Click="CloseAllDMs_Click" Width="180" Height="35" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                            </WrapPanel>
+
+                            <TextBlock Text="Profile Customization" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <WrapPanel Margin="0,0,0,20">
+                                <Button Content="Clear All Bios" Click="ClearBios_Click" Width="180" Height="35" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Set Random Bio" Click="RandomBio_Click" Width="180" Height="35" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Set Random HypeSquad" Click="RandomHypeSquad_Click" Width="180" Height="35" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Enable Light Mode" Click="SetLightMode_Click" Width="180" Height="35" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Enable Dark Mode" Click="SetDarkMode_Click" Width="180" Height="35" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Clear Notifications" Click="ClearNotifications_Click" Width="180" Height="35" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                            </WrapPanel>
+
+                            <TextBlock Text="Status Tools" FontSize="18" FontWeight="Bold" Margin="0,10,0,10"/>
+                            <WrapPanel Margin="0,0,0,20">
+                                <Button Content="Set Online" Click="SetStatus_Click" Tag="online" Width="135" Height="35" Margin="5" Background="#43B581" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Set Idle" Click="SetStatus_Click" Tag="idle" Width="135" Height="35" Margin="5" Background="#FAA61A" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Set DND" Click="SetStatus_Click" Tag="dnd" Width="135" Height="35" Margin="5" Background="#F04747" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Set Invisible" Click="SetStatus_Click" Tag="invisible" Width="135" Height="35" Margin="5" Background="#747F8D" Foreground="White" BorderThickness="0"/>
+                            </WrapPanel>
+
+                            <TextBlock Text="Utility Features" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <WrapPanel Margin="0,0,0,20">
+                                <Button Content="Token Age Checker" Click="CheckTokenAge_Click" Width="150" Height="30" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Download Avatars" Click="DownloadAvatars_Click" Width="150" Height="30" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Export Token Info" Click="ExportInfo_Click" Width="150" Height="30" Margin="5" Background="#43B581" Foreground="White" BorderThickness="0"/>
+                                <Button Content="Get User Info" Click="GetUserInfo_Click" Width="150" Height="30" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- Bypass & Rate Limits Tab -->
+                <Grid x:Name="BypassTab" Visibility="Collapsed">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Rate Limit Avoidance" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                            
+                            <Border Background="#23272A" CornerRadius="8" Padding="15" Margin="0,0,0,15" BorderBrush="#444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Global Delay (ms)" FontWeight="Bold" Foreground="White" Margin="0,0,0,5"/>
+                                    <TextBlock Text="The base delay between every API request." FontSize="10" Foreground="Gray" Margin="0,0,0,10"/>
+                                    <Slider x:Name="GlobalDelaySlider" Minimum="0" Maximum="10000" Value="2000" TickFrequency="100" IsSnapToTickEnabled="True" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{Binding ElementName=GlobalDelaySlider, Path=Value, StringFormat={}{0} ms}" Foreground="#7289DA" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#23272A" CornerRadius="8" Padding="15" Margin="0,0,0,15" BorderBrush="#444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Session Jitter (Randomization)" FontWeight="Bold" Foreground="White" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Adds a random amount of extra delay to make requests look human." FontSize="10" Foreground="Gray" Margin="0,0,0,10"/>
+                                    <Slider x:Name="JitterSlider" Minimum="0" Maximum="5000" Value="500" TickFrequency="50" IsSnapToTickEnabled="True" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{Binding ElementName=JitterSlider, Path=Value, StringFormat={}{0} ms}" Foreground="#7289DA" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#23272A" CornerRadius="8" Padding="15" Margin="0,0,0,15" BorderBrush="#444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="User-Agent Rotation" FontWeight="Bold" Foreground="White" Margin="0,0,0,5"/>
+                                    <CheckBox x:Name="RotateUACheck" Content="Rotate User-Agent on every request" Foreground="White" IsChecked="True" Margin="0,5"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Content="Save Settings" Height="40" Background="#43B581" Foreground="White" BorderThickness="0" Click="SaveBypassSettings_Click"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- Webhooks Tab -->
+                <Grid x:Name="WebhooksTab" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Webhook Management" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Webhook URL:" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TabWebhookUrlInput" Height="30" Background="#23272A" Foreground="White" BorderBrush="#444" VerticalContentAlignment="Center" Padding="5" Tag="https://discord.com/api/webhooks/..." Style="{StaticResource PlaceholderTextBox}"/>
+                        
+                        <TextBlock Text="Message Content:" Margin="0,15,0,5"/>
+                        <TextBox x:Name="TabWebhookMessageInput" Height="100" AcceptsReturn="True" Background="#23272A" Foreground="White" BorderBrush="#444" Padding="5" VerticalScrollBarVisibility="Auto" Tag="Enter message content here..." Style="{StaticResource PlaceholderTextBox}"/>
+                        
+                        <WrapPanel Margin="0,20,0,0">
+                            <Button Content="Send Once" Height="40" Width="120" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0" Click="TabSendWebhook_Click"/>
+                            <Button Content="Delete Webhook" Height="40" Width="120" Margin="5" Background="#F04747" Foreground="White" BorderThickness="0" Click="TabDeleteWebhook_Click"/>
+                            <Button Content="Get Info" Height="40" Width="120" Margin="5" Background="#7289DA" Foreground="White" BorderThickness="0" Click="TabGetWebhookInfo_Click"/>
+                        </WrapPanel>
+                        <ProgressBar x:Name="WebhookProgress" Height="20" Margin="0,20" Background="#23272A" Foreground="#7289DA" BorderThickness="0"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Proxies Tab -->
+                <Grid x:Name="ProxiesTab" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Proxy Configuration" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,30,0,0">
+                        <TextBlock Text="Proxy Type:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="ProxyTypeSelector" Width="100" SelectedIndex="0" Background="White" Foreground="Black">
+                            <ComboBoxItem Content="HTTP/S" Foreground="Black"/>
+                            <ComboBoxItem Content="SOCKS4" Foreground="Black"/>
+                            <ComboBoxItem Content="SOCKS5" Foreground="Black"/>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                    <Grid Grid.Row="1" Margin="0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Grid Grid.Column="0" Margin="0,0,5,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Scraped / Input Proxies" Foreground="Gray" Margin="0,0,0,5"/>
+                            <TextBox x:Name="ProxyInput" Grid.Row="1" AcceptsReturn="True" Background="#23272A" Foreground="White" BorderBrush="#444" Padding="5" VerticalScrollBarVisibility="Auto" Tag="Format: host:port or user:pass@host:port" Style="{StaticResource PlaceholderTextBox}"/>
+                        </Grid>
+                        
+                        <Grid Grid.Column="1" Margin="5,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Verified / Connected Proxies" Foreground="#43B581" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBox x:Name="VerifiedProxyInput" Grid.Row="1" AcceptsReturn="True" Background="#23272A" Foreground="White" BorderBrush="#43B581" Padding="5" VerticalScrollBarVisibility="Auto" Tag="Verified proxies will appear here..." Style="{StaticResource PlaceholderTextBox}"/>
+                        </Grid>
+                    </Grid>
+                    
+                    <StackPanel Grid.Row="2">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,5">
+                            <Button Content="Clear List" Height="30" Width="80" Margin="5,0" Background="#747F8D" Foreground="White" BorderThickness="0" Click="ClearProxyList_Click"/>
+                            <Button Content="Scrape Free" Height="30" Width="100" Margin="5,0" Background="#7289DA" Foreground="White" BorderThickness="0" Click="ScrapeProxies_Click"/>
+                            <Button Content="Smart Scrape" Height="30" Width="120" Margin="5,0" Background="#FAA61A" Foreground="White" BorderThickness="0" Click="SmartScrape_Click"/>
+                            <Button Content="Test Latency" Height="30" Width="100" Margin="5,0" Background="#7289DA" Foreground="White" BorderThickness="0" Click="TestProxySpeed_Click"/>
+                            <Button Content="Disable" Height="30" Width="80" Margin="5,0" Background="#F04747" Foreground="White" BorderThickness="0" Click="DisableProxies_Click"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <CheckBox x:Name="AutoSwitchProxyCheck" Content="Auto-Switch on Rate Limit" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <Button Content="Confirm Proxy (Check IP)" Height="30" Width="180" Margin="5,0" Background="#FAA61A" Foreground="White" BorderThickness="0" Click="ConfirmProxy_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!-- Console/Logs -->
+            <Grid Grid.Row="1" Margin="0,20,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Logs" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBox x:Name="LogText" Grid.Row="1" IsReadOnly="True" Background="#1E2124" Foreground="#B9BBBE" BorderBrush="#444" Padding="5" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
